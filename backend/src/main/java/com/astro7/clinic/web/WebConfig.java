@@ -1,0 +1,26 @@
+package com.astro7.clinic.web;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration(proxyBeanMethods = false)
+class WebConfig implements WebMvcConfigurer {
+
+	private final CorsProperties corsProperties;
+
+	WebConfig(CorsProperties corsProperties) {
+		this.corsProperties = corsProperties;
+	}
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/api/**")
+				.allowedOrigins(corsProperties.allowedOrigins().toArray(String[]::new))
+				.allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name())
+				.exposedHeaders(HttpHeaders.LOCATION);
+	}
+
+}
