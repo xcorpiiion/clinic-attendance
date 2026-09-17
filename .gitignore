@@ -15,6 +15,7 @@ backend/.mvn/wrapper/maven-wrapper.jar
 frontend/node_modules/
 frontend/.next/
 frontend/out/
+frontend/coverage/
 frontend/next-env.d.ts
 frontend/*.tsbuildinfo
 
