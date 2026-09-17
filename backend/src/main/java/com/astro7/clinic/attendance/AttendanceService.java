@@ -47,7 +47,7 @@ public class AttendanceService {
 	 * O CPF vem do banco: o front só conhece a versão mascarada.
 	 */
 	public Attendance renew(long previousId) {
-		Attendance previous = findById(previousId);
+		Attendance previous = find(previousId);
 		if (AttendanceStatus.OPEN.contains(previous.getStatus())) {
 			throw new OpenAttendanceExistsException();
 		}
@@ -56,6 +56,10 @@ public class AttendanceService {
 
 	@Transactional(readOnly = true)
 	public Attendance findById(long id) {
+		return find(id);
+	}
+
+	private Attendance find(long id) {
 		return repository.findById(id).orElseThrow(() -> new AttendanceNotFoundException(id));
 	}
 

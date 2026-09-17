@@ -16,9 +16,9 @@ import {
   type OpenAttendancePayload,
 } from "./open-attendance-schema";
 
-type AttendanceFormProps = {
+type AttendanceFormProps = Readonly<{
   onOpened: (attendance: Attendance) => void;
-};
+}>;
 
 const FORM_FIELDS = ["patientName", "cpf"] as const satisfies readonly (keyof OpenAttendanceFormValues)[];
 

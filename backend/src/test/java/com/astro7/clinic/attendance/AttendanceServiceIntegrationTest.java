@@ -31,9 +31,10 @@ class AttendanceServiceIntegrationTest extends IntegrationTest {
 	void databaseRefusesSecondOpenAttendanceEvenWithoutTheServiceCheck() {
 		LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 		attendanceRepository.saveAndFlush(Attendance.open("Maria da Silva", CPF, now));
+		Attendance duplicate = Attendance.open("Maria da Silva", CPF, now);
 
-		assertThatExceptionOfType(DataIntegrityViolationException.class).isThrownBy(
-				() -> attendanceRepository.saveAndFlush(Attendance.open("Maria da Silva", CPF, now)));
+		assertThatExceptionOfType(DataIntegrityViolationException.class)
+				.isThrownBy(() -> attendanceRepository.saveAndFlush(duplicate));
 	}
 
 	@Test

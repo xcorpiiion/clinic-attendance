@@ -8,11 +8,11 @@ import { Spinner } from "@/components/spinner";
 import { isFinal, useAttendancePolling } from "./attendance-polling";
 import { knownAttendance } from "./tracked-attendances";
 
-type AttendanceCardProps = {
+type AttendanceCardProps = Readonly<{
   id: number;
   onRenewed: (previousId: number, next: Attendance) => void;
   onDismiss: (id: number) => void;
-};
+}>;
 
 const STATUS_LABEL: Record<AttendanceStatus, string> = {
   PENDING: "Aguardando processamento",
@@ -88,9 +88,9 @@ export function AttendanceCard({ id, onRenewed, onDismiss }: AttendanceCardProps
       </div>
 
       {error && (
-        <p role="status" className="mt-3 text-sm text-warning">
+        <output className="mt-3 block text-sm text-warning">
           Não foi possível atualizar agora. A consulta continua automaticamente.
-        </p>
+        </output>
       )}
 
       {isFinal(status) && (
@@ -137,7 +137,7 @@ function FinishedActions({ id, onRenewed, onDismiss }: AttendanceCardProps) {
   );
 }
 
-function Protocol({ value }: { value: string }) {
+function Protocol({ value }: Readonly<{ value: string }>) {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -169,7 +169,7 @@ function Protocol({ value }: { value: string }) {
   );
 }
 
-function DismissButton({ onClick }: { onClick: () => void }) {
+function DismissButton({ onClick }: Readonly<{ onClick: () => void }>) {
   return (
     <button
       type="button"
@@ -181,6 +181,6 @@ function DismissButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function CardFrame({ children }: { children: ReactNode }) {
+function CardFrame({ children }: Readonly<{ children: ReactNode }>) {
   return <article className="rounded-xl border border-border bg-surface p-5 shadow-sm">{children}</article>;
 }

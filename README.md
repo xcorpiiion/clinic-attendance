@@ -131,6 +131,29 @@ cd frontend && npm run lint && npm run typecheck
 
 A cobertura sai em `backend/target/site/jacoco` e em `frontend/coverage` (`npm run test:coverage`).
 
+### Análise estática (SonarQube)
+
+Resultado da última análise, no SonarQube Community com o perfil padrão (Sonar way):
+
+| Projeto | Quality gate | Bugs | Vulnerabilidades | Code smells | Hotspots | Duplicação | Cobertura |
+|---|---|---|---|---|---|---|---|
+| backend | aprovado | 0 | 0 | 0 | 0 | 0% | 95,4% |
+| frontend | aprovado | 0 | 0 | 0 | 0 | 0% | 91,6% |
+
+Para reproduzir com um SonarQube local:
+
+```bash
+docker run -d --name sonarqube -p 9000:9000 sonarqube:community
+# em http://localhost:9000, gere um token de análise e exporte como SONAR_TOKEN
+
+cd backend && ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+  -Dsonar.host.url=http://localhost:9000
+
+cd ../frontend && npm run test:coverage && docker run --rm \
+  -e SONAR_HOST_URL=http://host.docker.internal:9000 -e SONAR_TOKEN \
+  -v "$PWD:/usr/src" sonarsource/sonar-scanner-cli
+```
+
 ## Estrutura
 
 ```

@@ -1,4 +1,4 @@
-export function Spinner({ className = "size-4" }: { className?: string }) {
+export function Spinner({ className = "size-4" }: Readonly<{ className?: string }>) {
   return (
     <svg className={`animate-spin ${className}`} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />

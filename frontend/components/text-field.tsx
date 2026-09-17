@@ -1,10 +1,10 @@
 import { useId, type ComponentPropsWithRef } from "react";
 
-type TextFieldProps = ComponentPropsWithRef<"input"> & {
+type TextFieldProps = Readonly<ComponentPropsWithRef<"input">> & Readonly<{
   label: string;
   error?: string;
   hint?: string;
-};
+}>;
 
 export function TextField({ label, error, hint, className, ...inputProps }: TextFieldProps) {
   const id = useId();

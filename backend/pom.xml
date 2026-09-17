@@ -12,7 +12,7 @@
 	<artifactId>clinic-attendance</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>clinic-attendance</name>
-	<description>Abertura de atendimentos com protocolo obtido de servico externo</description>
+	<description>Abertura de atendimentos com protocolo obtido de serviço externo</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -32,6 +32,8 @@
 		<springdoc.version>3.1.0</springdoc.version>
 		<wiremock.version>3.13.1</wiremock.version>
 		<jacoco.version>0.8.15</jacoco.version>
+		<sonar.projectKey>clinic-backend</sonar.projectKey>
+		<sonar.projectName>Clinic backend</sonar.projectName>
 	</properties>
 
 	<dependencies>
@@ -51,7 +53,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- O starter, e nao o flyway-core cru: no Boot 4 a auto-configuracao saiu
+		<!-- O starter, e não o flyway-core cru: no Boot 4 a auto-configuração saiu
 		     para o spring-boot-flyway, e sem ela o Flyway fica no classpath sem rodar. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

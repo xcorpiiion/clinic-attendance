@@ -22,7 +22,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
- * Todo erro sai como ProblemDetail (RFC 9457). Os erros de validação levam, em
+ * Os erros saem como ProblemDetail (RFC 9457). Os erros de validação levam, em
  * {@code errors}, a mensagem de cada campo, para o front mostrar ao lado dele.
  */
 @RestControllerAdvice

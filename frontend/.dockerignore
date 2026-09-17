@@ -5,3 +5,4 @@ Dockerfile
 .dockerignore
 npm-debug.log*
 .env*
+sonar-project.properties
