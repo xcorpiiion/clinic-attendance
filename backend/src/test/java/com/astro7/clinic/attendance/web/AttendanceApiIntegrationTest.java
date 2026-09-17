@@ -118,6 +118,37 @@ class AttendanceApiIntegrationTest extends IntegrationTest {
 	}
 
 	@Test
+	void renewsFinishedAttendanceForTheSamePatient() throws Exception {
+		long first = openAttendance();
+		processingService.claimDue(1);
+		processingService.complete(first, "3fa85f64-5717-4562-b3fc-2c963f66afa6");
+
+		String location = mockMvc.perform(post("/api/attendances/{id}/renewals", first))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.patientName").value("Maria da Silva"))
+				.andExpect(jsonPath("$.maskedCpf").value("***.982.247-**"))
+				.andExpect(jsonPath("$.status").value("PENDING"))
+				.andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
+
+		assertThat(location).matches(".*/api/attendances/\\d+$").doesNotEndWith("/" + first);
+	}
+
+	@Test
+	void refusesToRenewAttendanceStillInProgress() throws Exception {
+		long first = openAttendance();
+
+		mockMvc.perform(post("/api/attendances/{id}/renewals", first))
+				.andExpect(status().isConflict());
+		assertThat(attendanceRepository.count()).isEqualTo(1);
+	}
+
+	@Test
+	void refusesToRenewUnknownAttendance() throws Exception {
+		mockMvc.perform(post("/api/attendances/{id}/renewals", 999_999))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
 	void allowsCorsOnlyFromTheFrontend() throws Exception {
 		mockMvc.perform(options("/api/attendances")
 						.header(HttpHeaders.ORIGIN, "http://localhost:3000")

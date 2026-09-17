@@ -1,0 +1,239 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "Clinic Attendance API",
+    "description" : "Abertura de atendimentos e acompanhamento do protocolo.",
+    "version" : "v1"
+  },
+  "paths" : {
+    "/api/attendances" : {
+      "post" : {
+        "tags" : [ "Atendimentos" ],
+        "summary" : "Abre um atendimento, que aguarda o protocolo como PENDING",
+        "operationId" : "open",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpenAttendanceRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Atendimento aberto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AttendanceResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Dados inválidos; o campo errors traz a mensagem de cada um",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "O CPF já tem um atendimento em andamento",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/attendances/{id}/renewals" : {
+      "post" : {
+        "tags" : [ "Atendimentos" ],
+        "summary" : "Abre um novo atendimento para o paciente de um atendimento já encerrado",
+        "description" : "Aceito só quando o atendimento informado está COMPLETED ou FAILED.",
+        "operationId" : "renew",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Novo atendimento aberto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AttendanceResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Atendimento não encontrado",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "O paciente ainda tem um atendimento em andamento",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/attendances/{id}" : {
+      "get" : {
+        "tags" : [ "Atendimentos" ],
+        "summary" : "Consulta o atendimento; o protocolo aparece quando o status é COMPLETED",
+        "operationId" : "findById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Atendimento encontrado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AttendanceResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Atendimento não encontrado",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "OpenAttendanceRequest" : {
+        "type" : "object",
+        "properties" : {
+          "patientName" : {
+            "type" : "string",
+            "example" : "Maria da Silva",
+            "maxLength" : 150,
+            "minLength" : 3,
+            "pattern" : "^\\s*(\\p{L}[\\p{L} .'-]*)?$"
+          },
+          "cpf" : {
+            "type" : "string",
+            "description" : "Só dígitos ou no formato 000.000.000-00",
+            "example" : "52998224725",
+            "minLength" : 1
+          }
+        },
+        "required" : [ "cpf", "patientName" ]
+      },
+      "ApiProblem" : {
+        "type" : "object",
+        "description" : "Erro no formato RFC 9457",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "example" : "Dados inválidos"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 400
+          },
+          "detail" : {
+            "type" : "string",
+            "example" : "Corrija os campos indicados."
+          },
+          "instance" : {
+            "type" : "string",
+            "example" : "/api/attendances"
+          },
+          "errors" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            },
+            "description" : "Só em erros de validação: a mensagem de cada campo inválido",
+            "example" : {
+              "cpf" : "CPF inválido"
+            }
+          }
+        },
+        "required" : [ "status", "title" ]
+      },
+      "AttendanceResponse" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "patientName" : {
+            "type" : "string",
+            "example" : "Maria da Silva"
+          },
+          "maskedCpf" : {
+            "type" : "string",
+            "example" : "***.982.247-**"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "PROCESSING", "COMPLETED", "FAILED" ]
+          },
+          "protocol" : {
+            "type" : "string",
+            "description" : "Presente só quando o status é COMPLETED",
+            "example" : "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "required" : [ "createdAt", "id", "maskedCpf", "patientName", "status", "updatedAt" ]
+      }
+    }
+  }
+}
