@@ -1,0 +1,50 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: clinic-attendance
+  datasource:
+    url: "${DB_URL:jdbc:mysql://localhost:3306/clinic}"
+    username: ${DB_USERNAME:clinic}
+    password: ${DB_PASSWORD:clinic}
+  jpa:
+    # O schema é das migrações; o Hibernate só confere se a entidade bate com ele.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    # O banco criado pelo database/init.sql já tem a tabela da V1 (docs/adr/0002).
+    baseline-on-migrate: true
+    baseline-version: 1
+  threads:
+    virtual:
+      enabled: true
+  mvc:
+    problemdetails:
+      enabled: true
+
+clinic:
+  # Serviço externo que fornece o protocolo (docs/adr/0004).
+  protocol:
+    url: "${PROTOCOL_URL:https://httpbin.org/uuid}"
+    connect-timeout: 2s
+    read-timeout: 5s
+  # Rotina periódica (docs/adr/0003). O stale-after precisa ser bem maior que o read-timeout.
+  processing:
+    enabled: true
+    poll-interval: 2s
+    max-concurrency: 20
+    max-attempts: 5
+    initial-backoff: 5s
+    max-backoff: 2m
+    stale-after: 2m
+    stale-check-interval: 30s
+  cors:
+    allowed-origins: "${CORS_ALLOWED_ORIGINS:http://localhost:3000}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
