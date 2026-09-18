@@ -5,8 +5,8 @@
 ```mermaid
 flowchart LR
     recepcao([Recepção da clínica])
-    sistema[Abertura de atendimentos]
-    httpbin[(HTTPBin<br/>GET /uuid)]
+    sistema["Abertura de atendimentos"]
+    httpbin[("HTTPBin<br/>GET /uuid")]
 
     recepcao -- "informa nome e CPF,<br/>acompanha o protocolo" --> sistema
     sistema -- "pede um protocolo<br/>por atendimento" --> httpbin
@@ -24,7 +24,7 @@ flowchart LR
         db[("mysql<br/>MySQL 8.4 · :3306")]
     end
 
-    httpbin[(httpbin.org)]
+    httpbin[("httpbin.org")]
 
     browser -- "página e /api/*" --> front
     front -- "rewrite de /api/*" --> back
@@ -41,21 +41,21 @@ com `next dev` apontando para outra porta.
 ```mermaid
 flowchart TB
     subgraph web [attendance.web]
-        controller[AttendanceController]
+        controller["AttendanceController"]
     end
     subgraph attendance [attendance]
-        service[AttendanceService]
-        entity[Attendance<br/>transições de estado]
-        repo[AttendanceRepository]
+        service["AttendanceService"]
+        entity["Attendance<br/>transições de estado"]
+        repo["AttendanceRepository"]
     end
     subgraph processing [processing]
-        scheduler[AttendanceProcessingScheduler<br/>@Scheduled]
-        dispatcher[AttendanceDispatcher<br/>semáforo + virtual threads]
-        pservice[AttendanceProcessingService<br/>transações curtas]
-        retry[RetryPolicy]
+        scheduler["AttendanceProcessingScheduler<br/>@Scheduled"]
+        dispatcher["AttendanceDispatcher<br/>semáforo + virtual threads"]
+        pservice["AttendanceProcessingService<br/>transações curtas"]
+        retry["RetryPolicy"]
     end
     subgraph protocol [protocol]
-        client[ProtocolClient]
+        client["ProtocolClient"]
     end
 
     controller --> service --> repo
