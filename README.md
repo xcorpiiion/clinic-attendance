@@ -26,8 +26,8 @@ docker compose up --build
 | Swagger | http://localhost:8080/swagger-ui.html |
 
 O compose sobe o MySQL com o `database/init.sql` do desafio, depois a API, depois a tela,
-cada um esperando o anterior ficar saudável. Se alguma porta estiver ocupada, troque no
-ambiente ou num `.env`: `FRONTEND_PORT`, `BACKEND_PORT`, `MYSQL_PORT`.
+cada um esperando o anterior ficar saudável. Se alguma porta estiver ocupada, copie
+`.env.example` para `.env` e troque `FRONTEND_PORT`, `BACKEND_PORT` ou `MYSQL_PORT`.
 
 <details>
 <summary>Sem Docker para a aplicação (JDK 21 e Node 24)</summary>
@@ -118,7 +118,7 @@ Cada uma tem um ADR em [docs/adr](docs/adr/README.md), com o contexto e o que fo
 
 ```bash
 cd backend && ./mvnw verify      # 72 testes; precisa do Docker (Testcontainers)
-cd frontend && npm test          # 51 testes
+cd frontend && npm test          # 52 testes
 cd frontend && npm run lint && npm run typecheck
 ```
 
@@ -166,6 +166,7 @@ backend/
     cpf/            validação e máscara do CPF
     web/            erros, CORS
   src/main/resources/db/migration/   V1 (o init.sql) e V2
+  src/main/resources/application.yml  configuração (detalhada no backend/README.md)
 frontend/
   api/              contrato gerado (openapi.json, schema.d.ts) e cliente HTTP
   features/attendance/   formulário, card, polling, lista acompanhada
@@ -193,4 +194,7 @@ docs/               arquitetura e ADRs
 - O pacote `com.astro7.fullstack_challange` virou `com.astro7.clinic`: underscore em nome de
   pacote é apontado pelo Sonar, e o nome tinha um erro de digitação.
 - A versão do Java subiu de 17 para 21 ([ADR 0001](docs/adr/0001-java-21-e-virtual-threads.md)).
+- O `application.properties` virou `application.yml`: a configuração cresceu em grupos
+  (`spring.*`, `clinic.*`), e os comentários com acento ficam seguros em UTF-8, enquanto o
+  Spring Boot lê `.properties` como ISO-8859-1.
 - `database/` ficou como veio. O Flyway parte do `init.sql` em vez de substituí-lo.
