@@ -1,5 +1,7 @@
 # Abertura de atendimentos
 
+[![CI](https://github.com/xcorpiiion/clinic-attendance/actions/workflows/ci.yml/badge.svg)](https://github.com/xcorpiiion/clinic-attendance/actions/workflows/ci.yml)
+
 Desafio Full Stack da Astro7: a recepção de uma clínica registra o paciente (nome e CPF), o
 backend busca o protocolo do atendimento num serviço externo ([HTTPBin](https://httpbin.org/uuid))
 e a tela mostra o protocolo assim que ele fica pronto, sem recarregar.
