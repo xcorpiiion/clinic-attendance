@@ -27,6 +27,15 @@ describe("AttendanceForm", () => {
     expect(screen.getByLabelText("CPF")).toHaveValue("529.982.247-25");
   });
 
+  it("deixa corrigir o CPF apagando o último dígito", async () => {
+    const { fill, user } = setup();
+    await fill("", "52998224724");
+
+    await user.type(screen.getByLabelText("CPF"), "{Backspace}5");
+
+    expect(screen.getByLabelText("CPF")).toHaveValue("529.982.247-25");
+  });
+
   it("não envia com campos inválidos e diz o que corrigir", async () => {
     const fetchMock = mockFetch();
     const { fill, submit } = setup();
